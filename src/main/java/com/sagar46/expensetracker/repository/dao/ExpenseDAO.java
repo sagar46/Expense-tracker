@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ExpenseDAO {
+    private String id;
     private int amount;
     private String purpose;
     private String shop;
@@ -12,18 +13,12 @@ public class ExpenseDAO {
     private boolean isPayed;
     private String paymentMethod;
 
-    public ExpenseDAO(){
-
+    public String getId() {
+        return id;
     }
 
-    public ExpenseDAO(int amount, String purpose, String shop, LocalDateTime paymentTime, LocalDate dueDate, boolean isPayed, String paymentMethod) {
-        this.amount = amount;
-        this.purpose = purpose;
-        this.shop = shop;
-        this.paymentTime = paymentTime;
-        this.dueDate = dueDate;
-        this.isPayed = isPayed;
-        this.paymentMethod = paymentMethod;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getAmount() {

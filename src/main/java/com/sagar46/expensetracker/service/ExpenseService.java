@@ -4,6 +4,7 @@ package com.sagar46.expensetracker.service;
 import com.sagar46.expensetracker.repository.ExpenseRepository;
 import com.sagar46.expensetracker.service.bo.Due;
 import com.sagar46.expensetracker.service.bo.Expense;
+import com.sagar46.expensetracker.service.bo.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -23,7 +24,7 @@ public class ExpenseService {
         for(Expense exp: expenses){
             if(!exp.isPayed()){
                 if(duePerShop.getOrDefault(exp.getShop()+"__" + exp.getDueDate().toString(),null) != null){
-                    Due d = duePerShop.get(exp.getShop());
+                    Due d = duePerShop.get(exp.getShop()+"__" + exp.getDueDate().toString());
                     d.setAmount(d.getAmount()+exp.getAmount());
                 }else{
                     Due d = new Due();
@@ -48,14 +49,22 @@ public class ExpenseService {
         }
         return allDues;
     }
-    public void payment(String shop, int paymentAmount,Integer userId){
-        Map<String, Due> payment = new HashMap<>();
-        List<Expense> expenses = repository.getExpense(userId);
+    public void payment(Payment payment){
+        Map<String, Due>  map = new HashMap<>();
+        List<Expense> expenses = repository.getExpense(payment.getUserId());
+        Collections.sort(expenses,new ExpenseComparator());
         for(Expense exp : expenses){
-            if(!exp.isPayed() && exp.getShop().equals(shop)){
-                if(exp.getAmount() > paymentAmount){
-
+            if(!exp.isPayed() && exp.getShop().equals(payment.getShop())){
+                if(exp.getAmount() > payment.getPaymentAmount()){
+                    exp.setAmount(exp.getAmount() - payment.getPaymentAmount());
+                    repository.updateExpense(exp.getId(),exp, payment.getUserId());
+                    return;
+                }else{
+                    payment.setPaymentAmount(payment.getPaymentAmount() - exp.getAmount());
+                    exp.setPayed(true);
+                    repository.updateExpense(exp.getId(),exp, payment.getUserId());
                 }
+
             }
         }
     }

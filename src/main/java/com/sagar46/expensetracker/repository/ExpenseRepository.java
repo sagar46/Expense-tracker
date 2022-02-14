@@ -15,6 +15,7 @@ public class ExpenseRepository {
         ArrayList<Expense> expenses = new ArrayList<>();
         for(ExpenseDAO d :expenseStore.getOrDefault(id, Collections.emptyList())){
             Expense expense = new Expense();
+            expense.setId(d.getId());
             expense.setAmount(d.getAmount());
             expense.setPurpose(d.getPurpose());
             expense.setPaymentMethod(d.getPaymentMethod());
@@ -29,6 +30,7 @@ public class ExpenseRepository {
     }
     public void addExpense(Integer id, Expense expense){
         ExpenseDAO expenseDAO = new ExpenseDAO();
+        expenseDAO.setId(UUID.randomUUID().toString());
         expenseDAO.setAmount(expense.getAmount());
         expenseDAO.setPurpose(expense.getPurpose());
         expenseDAO.setPaymentMethod(expense.getPaymentMethod());
@@ -42,5 +44,22 @@ public class ExpenseRepository {
             expenseStore.put(id,new ArrayList<>(Arrays.asList(expenseDAO)));
         }
     }
+    public void updateExpense(String id,Expense expense,Integer userId){
+
+
+        for(ExpenseDAO expenseDAO :expenseStore.get(userId)){
+            if(expenseDAO.getId().equals(id)){
+                expenseDAO.setId(id);
+                expenseDAO.setAmount(expense.getAmount());
+                expenseDAO.setPurpose(expense.getPurpose());
+                expenseDAO.setPaymentMethod(expense.getPaymentMethod());
+                expenseDAO.setShop(expense.getShop());
+                expenseDAO.setPaymentTime(expense.getPaymentTime());
+                expenseDAO.setDueDate(expense.getDueDate());
+                expenseDAO.setPayed(expense.isPayed());
+            }
+        }
+    }
+
 
 }
