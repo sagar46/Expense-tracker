@@ -1,27 +1,30 @@
-package com.sagar46.expensetracker.service;
+package com.sagar46.expensetracker.service.bo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Expense {
     private int amount;
-    private String cause;
+    private String purpose;
     private String shop;
-    private LocalDateTime localDateTime;
-    private String method;
+    private LocalDateTime paymentTime;
+    private LocalDate dueDate;
+    private boolean isPayed;
+    private String paymentMethod;
 
 
     public Expense(){
 
     }
-    public Expense(int amount , String cause, String shop, LocalDateTime localDateTime, String method) {
+    public Expense(int amount, String purpose, String shop, LocalDateTime paymentTime, LocalDate dueDate, boolean isPayed, String paymentMethod) {
         this.amount = amount;
-        this.cause = cause;
+        this.purpose = purpose;
         this.shop = shop;
-        this.localDateTime = localDateTime;
-        this.method = method;
-
+        this.paymentTime = paymentTime;
+        this.dueDate = dueDate;
+        this.isPayed = isPayed;
+        this.paymentMethod = paymentMethod;
     }
-
 
     public int getAmount() {
         return amount;
@@ -31,12 +34,12 @@ public class Expense {
         this.amount = amount;
     }
 
-    public String getCause() {
-        return cause;
+    public String getPurpose() {
+        return purpose;
     }
 
-    public void setCause(String cause) {
-        this.cause = cause;
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 
     public String getShop() {
@@ -47,22 +50,35 @@ public class Expense {
         this.shop = shop;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public LocalDateTime getPaymentTime() {
+        return paymentTime;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
+    public void setPaymentTime(LocalDateTime paymentTime) {
+        this.paymentTime = paymentTime;
     }
 
-    public String getMethod() {
-        return method;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
+    public boolean isPayed() {
+        return isPayed;
+    }
 
+    public void setPayed(boolean payed) {
+        isPayed = payed;
+    }
 
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
 }

@@ -1,53 +1,63 @@
-package com.sagar46.expensetracker.controller;
+package com.sagar46.expensetracker.service;
 
 
+import com.sagar46.expensetracker.repository.ExpenseRepository;
+import com.sagar46.expensetracker.service.bo.Due;
+import com.sagar46.expensetracker.service.bo.Expense;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class ExpenseService {
-    private Map<Integer, Expense> expenses = new HashMap<>(){{
-       put(1,new Expense(100,"Food","Naeen",LocalDateTime.now(),"Cash"));
-    }};
 
-    public Map<Integer, Expense> getAllExpenses(){
-        return expenses;
+    @Autowired
+    ExpenseRepository repository;
+    public void addExpense(Integer userId,Expense expense){
+        repository.addExpense(userId,expense);
     }
-//    public void addExpenses(Expenses expense){
-//
-//        expenses.add(expense);
-//    }
-//    public Expenses getExpense(String id){
-//        Expenses e = new Expenses();
-//        for(int i =0 ; i < expenses.size(); i++){
-//            e = expenses.get(i);
-//            if(e.getShop().equals(id)){
-//                break;
-//            }
-//        }
-//        return e;
-//    }
-//    public void updateExpense(String id, Expenses expense){
-//        for(int i =0 ; i < expenses.size(); i++){
-//            Expenses e = expenses.get(i);
-//            if(e.getShop().equals(id)){
-//                expenses.set(i,expense);
-//                return;
-//            }
-//
-//        }
-//    }
-//    public Expenses deleteExpense(String id){
-//        Expenses e = new Expenses();
-//        for(int i =0 ; i < expenses.size(); i++){
-//            e = expenses.get(i);
-//            if(e.getShop().equals(id)){
-//                expenses.remove(i);
-//            }
-//        }
-//        return e;
-//    }
+
+    public Map<String , Due> getDues(Integer userId){
+        Map<String , Due> duePerShop = new HashMap<>();
+        List<Expense> expenses = repository.getExpense(userId);
+        for(Expense exp: expenses){
+            if(!exp.isPayed()){
+                if(duePerShop.getOrDefault(exp.getShop()+"__" + exp.getDueDate().toString(),null) != null){
+                    Due d = duePerShop.get(exp.getShop());
+                    d.setAmount(d.getAmount()+exp.getAmount());
+                }else{
+                    Due d = new Due();
+                    d.setDueDate(exp.getDueDate());
+                    d.setShop(exp.getShop());
+                    d.setUserId(userId);
+                    d.setAmount(exp.getAmount());
+                    duePerShop.put(exp.getShop()+"__" + exp.getDueDate().toString(),d);
+                }
+            }
+        }
+        return duePerShop;
+    }
+
+    public int getDuesForShop(Integer userId,String shop){
+        int allDues = 0;
+        List<Expense> expenses = repository.getExpense(userId);
+        for(Expense exp: expenses){
+            if(!exp.isPayed() && exp.getShop().equals(shop)){
+                allDues+= exp.getAmount();
+            }
+        }
+        return allDues;
+    }
+    public void payment(String shop, int paymentAmount,Integer userId){
+        Map<String, Due> payment = new HashMap<>();
+        List<Expense> expenses = repository.getExpense(userId);
+        for(Expense exp : expenses){
+            if(!exp.isPayed() && exp.getShop().equals(shop)){
+                if(exp.getAmount() > paymentAmount){
+
+                }
+            }
+        }
+    }
 
 }
